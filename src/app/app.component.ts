@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { Subject } from "rxjs";
+import { CharService } from "./char.service";
 
 @Component({
   selector: "app-root",
@@ -9,41 +10,19 @@ import { Subject } from "rxjs";
 export class AppComponent implements OnInit {
   title = "assignment-observable";
 
+  constructor(private cs: CharService) {}
+
   time: number = 0;
   count: number = 0;
   interval: any;
   htmlDisp: any[] = [];
-  alphabets: string[] = [
-    "A",
-    "B",
-    "C",
-    "D",
-    "E",
-    "F",
-    "G",
-    "H",
-    "I",
-    "J",
-    "K",
-    "L",
-    "M",
-    "N",
-    "O",
-    "P",
-    "Q",
-    "R",
-    "S",
-    "T",
-    "U",
-    "V",
-    "W",
-    "X",
-    "Y",
-    "Z"
-  ];
+  alphabets: any[];
   display = new Subject();
 
   ngOnInit(): void {
+    this.cs.getAlphabets().subscribe(res => {
+      this.alphabets = res;
+    });
     this.display.subscribe(res => {
       this.htmlDisp.push(res);
     });
