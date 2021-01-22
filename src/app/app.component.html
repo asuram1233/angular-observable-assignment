@@ -1,0 +1,26 @@
+<div class="m-3">
+	<div class="row">
+		<div class="col-md-2 col-sm-2"></div>
+		<div class="col-md-8 col-sm-8">
+			<div class="btnClass">
+				<button class="btn btn-primary" (click)="startTimer()">Start</button>
+				<button class="btn btn-danger" (click)="stopTimer()">Stop</button>
+			</div>
+		</div>
+		<div class="col-md-2 col-sm-2"></div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-2 col-sm-2"></div>
+		<div class="col-md-8 col-sm-8">
+			<div class="btnClass">
+				<ul>
+					<li *ngFor="let item of htmlDisp">
+						{{ item }}
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="col-md-2 col-sm-2"></div>
+	</div>
+</div>

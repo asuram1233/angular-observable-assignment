@@ -1,0 +1,7 @@
+.btnClass > * {
+  margin: 1em;
+}
+
+.btnClass button {
+  width: 5em;
+}
