@@ -3,8 +3,20 @@
 		<div class="col-md-2 col-sm-2"></div>
 		<div class="col-md-8 col-sm-8">
 			<div class="btnClass">
-				<button class="btn btn-primary" (click)="startTimer()">Start</button>
-				<button class="btn btn-danger" (click)="stopTimer()">Stop</button>
+				<ng-container *ngIf="count ===0">
+					<button class=" btn btn-primary" (click)="start()">Start</button>
+				</ng-container>
+				<ng-container *ngIf="count !==0">
+					<button class="btn btn-warning" (click)="pause()">Pause</button>
+				</ng-container>
+				<ng-container *ngIf="count !==0">
+					<button class="btn btn-info" (click)="restart()">Restart</button>
+				</ng-container>
+				<ng-container *ngIf="runTime !==0">
+					<button class="btn btn-danger" (click)="stop()">Stop</button>
+				</ng-container>
+
+				<h4 *ngIf="count ===0">Click Start </h4>
 			</div>
 		</div>
 		<div class="col-md-2 col-sm-2"></div>

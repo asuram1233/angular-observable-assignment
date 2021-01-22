@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
-import { Subject } from "rxjs";
-import { CharService } from "./char.service";
+import { interval, Observable, PartialObserver, Subject } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "app-root",
@@ -8,41 +8,39 @@ import { CharService } from "./char.service";
   styleUrls: ["./app.component.css"]
 })
 export class AppComponent implements OnInit {
-  title = "assignment-observable";
-
-  constructor(private cs: CharService) {}
-
-  time: number = 0;
-  count: number = 0;
-  interval: any;
+  runTime = 0;
+  count = 0;
+  alphabets: string[] = [];
+  display: Observable<number>;
+  time: PartialObserver<number>;
+  stopClick$ = new Subject();
+  pauseClick$ = new Subject();
   htmlDisp: any[] = [];
-  alphabets: any[];
-  display = new Subject();
 
-  ngOnInit(): void {
-    this.cs.getAlphabets().subscribe(res => {
-      this.alphabets = res;
-    });
-    this.display.subscribe(res => {
-      this.htmlDisp.push(res);
-    });
+  ngOnInit() {
+    this.dynamicAlphabets();
   }
 
-  startTimer() {
-    this.interval = setInterval(() => {
-      if (this.time >= 0 && this.time < this.alphabets.length) {
-        this.time++;
-        return this.display.next(
-          this.timeFormatDisplay(this.time, this.alphabets)
-        );
-      } else {
-        // this.time = 0;
-        return;
+  start() {
+    this.display = interval(1000).pipe(
+      takeUntil(this.pauseClick$),
+      takeUntil(this.stopClick$)
+    );
+
+    this.time = {
+      next: () => {
+        if (this.runTime >= 0 && this.runTime < this.alphabets.length) {
+          this.runTime++;
+          this.timeFormatDisplay(this.runTime, this.alphabets);
+        } else {
+          this.stop();
+        }
       }
-    }, 1000);
+    };
+    this.display.subscribe(this.time);
   }
 
-  timeFormatDisplay(value: number, chars: any): string {
+  timeFormatDisplay(value: number, chars: any): void {
     let hrs = Math.floor(value / 3600);
     let min = Math.floor((value % 3600) / 60);
     let sec = Math.floor(value - min * 60);
@@ -53,16 +51,31 @@ export class AppComponent implements OnInit {
       let add = `${("00" + hrs).slice(-2)} : ${("00" + min).slice(-2)} : ${(
         "00" + sec
       ).slice(-2)} => ${(this.count += 10)}`;
-      this.display.next(res);
-      return add;
+      this.htmlDisp.push(res);
+      this.htmlDisp.push(add);
     } else {
-      return res;
+      this.htmlDisp.push(res);
     }
   }
 
-  stopTimer() {
-    this.display.unsubscribe();
+  pause() {
+    this.pauseClick$.next();
+  }
+
+  restart() {
+    this.display.subscribe(this.time);
+  }
+
+  stop() {
+    this.runTime = 0;
+    this.count = 0;
+    this.stopClick$.next();
     this.htmlDisp = [];
-    location.reload();
+  }
+
+  dynamicAlphabets() {
+    this.alphabets = [...Array(26)].map((a, b) =>
+      String.fromCharCode(b + 97).toUpperCase()
+    );
   }
 }
