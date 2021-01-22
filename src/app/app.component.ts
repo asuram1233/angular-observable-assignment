@@ -53,8 +53,8 @@ export class AppComponent implements OnInit {
       let add = `${("00" + hrs).slice(-2)} : ${("00" + min).slice(-2)} : ${(
         "00" + sec
       ).slice(-2)} => ${(this.count += 10)}`;
-      this.display.next(add);
-      return res;
+      this.display.next(res);
+      return add;
     } else {
       return res;
     }
